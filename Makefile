@@ -1,6 +1,6 @@
 # Hey Emacs, this is a -*- makefile -*-
 #----------------------------------------------------------------------------
-# WinAVR Makefile Template written by Eric B. Weddington, Jörg Wunsch, et al.
+# WinAVR Makefile Template written by Eric B. Weddington, Jï¿½rg Wunsch, et al.
 #
 # Released to the Public Domain
 #
@@ -620,8 +620,3 @@ build elf hex eep lss sym coff extcoff \
 clean clean_list program debug gdb-config
 
 
-
-flash :
-	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude.conf" -U flash:w:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a -U flash:v:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a
-fuse :
-	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude.conf" -U lfuse:w:0xFF:m -U hfuse:w:0xC1:m 
