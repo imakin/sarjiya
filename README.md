@@ -1,5 +1,5 @@
 sarjiya
 =======
 
-Sarjiya High Speed Line Follower robot program for Atmel Avr ATMega.
-Written for avr-gcc
+Sarjiya: Full-featured High Speed Line Follower for Atmel Avr ATMega with PID controll.
+Written in avr-gcc. With under development in-system map learning.
