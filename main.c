@@ -6,9 +6,14 @@
  * 30 OKTOBER 2011
  * Makin
  * 
+<<<<<<< HEAD
  * ATMEGA 32:
  * 	EEPROM 1024 Bytes
  * 	SRAM	  2048 Bytes
+=======
+ * EEPROM 1024 Bytes
+ * SRAM	  2048 Bytes
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
  * 
  * ADC sensor dpn 34567 ~67 adc, 345 sel
  */
@@ -112,8 +117,11 @@ void Menu(void);
 void SettingMenu(void);
 void SettingDebugMenu(void);
 void SettingDebugSensor(void);
+<<<<<<< HEAD
 void SettingDebugPrintlog(char* nama,int8_t data[]);
 void SettingDebugPrintlog2(char* nama,int8_t data[][2]); //Seems avr-gcc should define unique functions to get unique arguments
+=======
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 void SettingSetPIDSpeedSpeed(void);
 void SettingSetPIDSpeedKP(void);
 void SettingSetPIDSpeedKD(void);
@@ -122,16 +130,22 @@ void SettingSetPIDSpeedMenu(void);
 void Run(void);
 void RunOnce(uint8_t speed, uint8_t kp, uint8_t kd);
 void RunMapping(uint8_t mulai);
+<<<<<<< HEAD
 void RunLearn(void);
+=======
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 void RunC00ke01(void);
 void RunC01ke02(void);
 void RunC02ke03(void);
 void RunC03ke04(void);
+<<<<<<< HEAD
 void RunEb00ke01(void);
 void RunEb01ke02(void);
 void RunEb02ke03(void);
 void RunProgram(void);
 void RunWhileNormal(uint8_t sampling_limit);
+=======
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 void RunTestCounter(void);
 void ProgMapping(void);
 
@@ -144,11 +158,19 @@ uint8_t gCaseH[50], gCaseL[50],  gCaseN;//Case High, Case Low, Case Value, Case 
 int8_t gCaseV[50];
 uint16_t gSensAnalog[19];
 uint16_t gSensRef[19];//Bates LOW-HIGH Analog
+<<<<<<< HEAD
 uint8_t gSensH, gSensL, gSensA; //gSensA = sensor kiri,kanan,tengah
 
 uint32_t counter=0,countermax=30;
 
 #define SENS_A_LEFT_BIT		0 //gSensA = sensor kiri,kanan,tengah
+=======
+uint8_t gSensH, gSensL, gSensA;
+
+uint32_t counter=0,countermax=30;
+
+#define SENS_A_LEFT_BIT		0
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 #define SENS_A_MID_BIT		2
 #define SENS_A_RIGHT_BIT	1
 
@@ -163,8 +185,13 @@ uint32_t counter=0,countermax=30;
 uint16_t gState;
 uint8_t gScrollNum;
 uint8_t gScrollMax;
+<<<<<<< HEAD
 ///MENU2 pnya MAX SCROLL,, ADA BERAPA PILIHAN DIDALAMNYA
 #define MAX_SCROLL_MENU							9 ///GUA GIBENG JUGA NIH
+=======
+///MAX SCROLL,, ADA BERAPA PILIHAN DIDALAMNYA
+#define MAX_SCROLL_MENU							8 ///GUA GIBENG JUGA NIH
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 #define MAX_SCROLL_SETTING_MENU					6
 #define MAX_SCROLL_SETTING_DEBUG_MENU			3
 #define MAX_SCROLL_SET_PID_SPEED_MENU			5
@@ -182,17 +209,25 @@ uint8_t GetChild(uint8_t parent, uint8_t childid);
 #define STATE_MENU								0 ///KAMPRETOS
 #define STATE_RUN								7	///GUA BERI!
 #define STATE_CALIBRATE							5 ///DIBIKIN DI MENU UTAMA, KRN SERING DILAKUKAN
+<<<<<<< HEAD
 #define STATE_RUN_MAPPING						9
 #define STATE_RUN_MAPPING_C1					10
 #define STATE_RUN_LEARN							1
 #define STATE_RUN_MAPPING_C2					2
 #define STATE_RUN_MAPPING_C3					3
 #define STATE_RUN_MAPPING_EBOTEC				4
+=======
+#define STATE_RUN_MAPPING						1
+#define STATE_RUN_MAPPING_C1					2
+#define STATE_RUN_MAPPING_C2					3
+#define STATE_RUN_MAPPING_C3					4
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 
 #define STATE_RUN_TEST_COUNTER					8
 
 #define STATE_SETTING_MENU						6
 #define STATE_SETTING_DEBUG_MENU				61
+<<<<<<< HEAD
 #define STATE_SETTING_DEBUG_SENSOR				 611
 #define STATE_SETTING_DEBUG_ADC					 612
 #define STATE_SETTING_DEBUG_DRIVER				 613
@@ -208,6 +243,22 @@ uint8_t GetChild(uint8_t parent, uint8_t childid);
 #define STATE_SETTING_SAVE_LOAD					 632
 #define STATE_SETTING_SENSOR_MENU				64
 #define STATE_SETTING_SENSOR_MODE				 641
+=======
+#define STATE_SETTING_DEBUG_SENSOR				 311
+#define STATE_SETTING_DEBUG_ADC					 312
+#define STATE_SETTING_DEBUG_DRIVER				 313
+#define STATE_SETTING_SET_PID_SPEED_MENU		62 ///PID & SPEED
+#define STATE_SETTING_SET_PID_SPEED_KP			 321
+#define STATE_SETTING_SET_PID_SPEED_KD			 322
+#define STATE_SETTING_SET_PID_SPEED_SPEED		 323
+#define STATE_SETTING_SET_PID_SPEED_MINSPEED	 324
+#define STATE_SETTING_SET_PID_SPEED_MAXSPEED	 325
+#define STATE_SETTING_SAVE_MENU					63
+#define STATE_SETTING_SAVE_SAVE					 331
+#define STATE_SETTING_SAVE_LOAD					 332
+#define STATE_SETTING_SENSOR_MENU				64
+#define STATE_SETTING_SENSOR_MODE				 341
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 #define STATE_SETTING_SAMPLING					65
 #define STATE_SETTING_ERROR						66 //BOBOT
 
@@ -262,9 +313,12 @@ int main(void)
 		if (gState == STATE_RUN_MAPPING_C1)					RunMapping(1);
 		if (gState == STATE_RUN_MAPPING_C2)					RunMapping(2);
 		if (gState == STATE_RUN_MAPPING_C3)					RunMapping(3);
+<<<<<<< HEAD
 		if (gState == STATE_RUN_MAPPING_EBOTEC)				RunMapping(4);
 		if (gState == STATE_RUN_LEARN)						RunLearn();
 		
+=======
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 		if (gState == STATE_RUN_TEST_COUNTER)				RunTestCounter();
 		if (gState == STATE_SETTING_MENU)					SettingMenu();
 		if (gState == STATE_SETTING_SET_PID_SPEED_MENU)		SettingSetPIDSpeedMenu();
@@ -333,6 +387,7 @@ void RunMapping(uint8_t mulai)
 	_delay_ms(250);
 	if (mulai==0)
 	{
+<<<<<<< HEAD
 		RunProgram();
 	}
 	else if (mulai==1)
@@ -359,6 +414,30 @@ void RunMapping(uint8_t mulai)
 		RunEb00ke01();
 	}
 	//~ Run();
+=======
+		RunC00ke01();
+		RunC01ke02();
+		RunC02ke03();
+		RunC03ke04();
+	}
+	else if (mulai==1)
+	{
+		RunC01ke02();
+		RunC02ke03();
+		RunC03ke04();
+	}
+	else if (mulai==2)
+	{
+		RunC02ke03();
+		RunC03ke04();
+	}
+	else if (mulai==3)
+	{
+		RunC03ke04();
+	}
+	
+	Run();
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 	counter=0;
 	gState=STATE_MENU;
 	OCR1A=0;
@@ -366,6 +445,7 @@ void RunMapping(uint8_t mulai)
 	//~ while(1);
 }
 
+<<<<<<< HEAD
 void RunLearn()
 {
 	RunWhileNormal(5);
@@ -429,6 +509,31 @@ void RunC00ke01()
 	
 	DriveMove(0,0);while(ButtonIsNotPressed());
 	
+=======
+void RunC00ke01()
+{
+	_delay_ms(250);
+	counter=0;
+	SensorReadDigital();
+	while (counter<=1750)
+	{
+		RunOnce(gDriveSpeed,gDriveKP,gDriveKD);
+	}
+	counter=0;
+	//~ gDriveSpeed = 100;
+	gDriveLimit=140;
+	while (counter<=150)
+	{
+		RunOnce(100,10,15);
+	}
+	gDriveLimit=120;
+	counter=0;
+	while(counter<=800)
+	{
+		RunOnce(30,gDriveKP,gDriveKD);
+	}
+	counter=0;
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 }
 void RunC01ke02()
 {
@@ -500,6 +605,7 @@ void RunC03ke04()
 		RunOnce(30,3,gDriveKD);
 	}
 }
+<<<<<<< HEAD
 void RunProgram()
 {
 	counter=0;
@@ -803,6 +909,8 @@ void RunEb02ke03();
 	
 }*/
 
+=======
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 void RunTestCounter()
 {
 	_delay_ms(250);
@@ -939,7 +1047,11 @@ void RunOnce(uint8_t speed, uint8_t kp, uint8_t kd)
 		}
 	}
 	if (PIDGetError())	PIDCalculateExecuteCustom(speed,kp,kd);
+<<<<<<< HEAD
 	else //if ((gSensH==0) && (gSensL==0))
+=======
+	else if ((gSensH==0) && (gSensL==0))
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 	{
 		DirForward();
 		OCR1A=40;
@@ -1399,7 +1511,11 @@ void LoadCase()
 void SetDefault()
 {
 	
+<<<<<<< HEAD
 	gCaseN = 32;
+=======
+	gCaseN = 40;
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 	gCaseH[ 0] = 0b10000000; gCaseL[ 0] = 0b00000000; gCaseV[ 0] = 15;
 	gCaseH[ 1] = 0b11000000; gCaseL[ 1] = 0b00000000; gCaseV[ 1] = 14;
 	gCaseH[ 2] = 0b11100000; gCaseL[ 2] = 0b00000000; gCaseV[ 2] = 13;
@@ -1414,9 +1530,15 @@ void SetDefault()
 	gCaseH[11] = 0b00000110; gCaseL[11] = 0b00000000; gCaseV[11] = 4;
 	gCaseH[12] = 0b00000111; gCaseL[12] = 0b00000000; gCaseV[12] = 5;
 	gCaseH[13] = 0b00000011; gCaseL[13] = 0b00000000; gCaseV[13] = 2;
+<<<<<<< HEAD
 	gCaseH[14] = 0b00000011; gCaseL[14] = 0b10000000; gCaseV[14] = 0;
 	gCaseH[15] = 0b00000001; gCaseL[15] = 0b10000000; gCaseV[15] = 0;
 	gCaseH[16] = 0b00000001; gCaseL[16] = 0b11000000; gCaseV[16] = 0;
+=======
+	gCaseH[14] = 0b00000011; gCaseL[14] = 0b10000000; gCaseV[14] = 1;
+	gCaseH[15] = 0b00000001; gCaseL[15] = 0b10000000; gCaseV[15] = 0;
+	gCaseH[16] = 0b00000001; gCaseL[16] = 0b11000000; gCaseV[16] = -1;
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 	gCaseH[17] = 0b00000000; gCaseL[17] = 0b11000000; gCaseV[17] = -2;
 	gCaseH[18] = 0b00000000; gCaseL[18] = 0b11100000; gCaseV[18] = -5;
 	gCaseH[19] = 0b00000000; gCaseL[19] = 0b01100000; gCaseV[19] = -4;
@@ -1433,6 +1555,7 @@ void SetDefault()
 	gCaseH[30] = 0b00000000; gCaseL[30] = 0b00000001; gCaseV[30] = -15;
 	gCaseH[31] = 0b01111000; gCaseL[31] = 0b00000000; gCaseV[31] = 13;
 	gCaseH[32] = 0b00000000; gCaseL[32] = 0b00011110; gCaseV[32] = -13;
+<<<<<<< HEAD
 	//~ gCaseH[33] = 0b00000111; gCaseL[33] = 0b10000000; gCaseV[33] = 12;
 	//~ gCaseH[34] = 0b00000001; gCaseL[34] = 0b11100000; gCaseV[34] = -12;
 	//~ gCaseH[35] = 0b00001111; gCaseL[35] = 0b00000000; gCaseV[35] = 12;
@@ -1441,6 +1564,16 @@ void SetDefault()
 	//~ gCaseH[38] = 0b00000001; gCaseL[38] = 0b11110000; gCaseV[38] = -12;
 	//~ gCaseH[39] = 0b00011111; gCaseL[39] = 0b10000000; gCaseV[39] = 14;
 	//~ gCaseH[40] = 0b00000001; gCaseL[40] = 0b11111000; gCaseV[40] = -14;
+=======
+	gCaseH[33] = 0b00000111; gCaseL[33] = 0b10000000; gCaseV[33] = 12;
+	gCaseH[34] = 0b00000001; gCaseL[34] = 0b11100000; gCaseV[34] = -12;
+	gCaseH[35] = 0b00001111; gCaseL[35] = 0b00000000; gCaseV[35] = 12;
+	gCaseH[36] = 0b00000000; gCaseL[36] = 0b11110000; gCaseV[36] = -12;
+	gCaseH[37] = 0b00001111; gCaseL[37] = 0b10000000; gCaseV[37] = 12;
+	gCaseH[38] = 0b00000001; gCaseL[38] = 0b11110000; gCaseV[38] = -12;
+	gCaseH[39] = 0b00011111; gCaseL[39] = 0b10000000; gCaseV[39] = 14;
+	gCaseH[40] = 0b00000001; gCaseL[40] = 0b11111000; gCaseV[40] = -14;
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 	
 	//~ gCaseH[ 0] = 0b00000000; gCaseL[ 0] = 0b00000000; gCaseV[ 0] = 8;
 	//~ gCaseH[ 0] = 0b00000000; gCaseL[ 0] = 0b00000000; gCaseV[ 1] = 7;
@@ -2023,7 +2156,11 @@ void Menu()
 			act = ButtonRead();
 			if (act == BUTTON_ENTER_DOWN)
 			{
+<<<<<<< HEAD
 				gState = STATE_RUN_MAPPING_C3;
+=======
+				gState = STATE_RUN_MAPPING_C1;
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 				gScrollNum = 1;
 			}
 			else if (act == BUTTON_NEXT_DOWN)
@@ -2097,6 +2234,7 @@ void Menu()
 			{
 				gScrollNum--;
 			}
+<<<<<<< HEAD
 		}
 		else if (gScrollNum == GetCursor(STATE_RUN_MAPPING_EBOTEC))
 		{
@@ -2139,6 +2277,9 @@ void Menu()
 			}
 		}
 		
+=======
+		}	
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 	}
 }
 
@@ -2458,7 +2599,11 @@ void SettingSetPIDSpeedSpeed()
 		act=ButtonRead();
 		if (act == BUTTON_NEXT_DOWN)		speed++;
 		else if (act == BUTTON_PREV_DOWN)	speed--;
+<<<<<<< HEAD
 		else if (act == BUTTON_BACK_DOWN)	gState = GetParent(STATE_SETTING_SET_PID_SPEED_SPEED);
+=======
+		else if (act == BUTTON_BACK_DOWN)	gState == GetParent(STATE_SETTING_SET_PID_SPEED_SPEED);
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 		else if (act == BUTTON_ENTER_DOWN)
 		{
 			gDriveSpeed = speed;
@@ -2481,7 +2626,11 @@ void SettingSetPIDSpeedKP()
 		act=ButtonRead();
 		if (act == BUTTON_NEXT_DOWN)		kp++;
 		else if (act == BUTTON_PREV_DOWN)	kp--;
+<<<<<<< HEAD
 		else if (act == BUTTON_BACK_DOWN)	gState = GetParent(STATE_SETTING_SET_PID_SPEED_KP);
+=======
+		else if (act == BUTTON_BACK_DOWN)	gState == GetParent(STATE_SETTING_SET_PID_SPEED_KP);
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 		else if (act == BUTTON_ENTER_DOWN)
 		{
 			gDriveKP = kp;
@@ -2505,7 +2654,11 @@ void SettingSetPIDSpeedKD()
 		act=ButtonRead();
 		if (act == BUTTON_NEXT_DOWN)		kd++;
 		else if (act == BUTTON_PREV_DOWN)	kd--;
+<<<<<<< HEAD
 		else if (act == BUTTON_BACK_DOWN)	gState = GetParent(STATE_SETTING_SET_PID_SPEED_KD);
+=======
+		else if (act == BUTTON_BACK_DOWN)	gState == GetParent(STATE_SETTING_SET_PID_SPEED_KD);
+>>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 		else if (act == BUTTON_ENTER_DOWN)
 		{
 			gDriveKD = kd;
