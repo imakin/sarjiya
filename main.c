@@ -104,6 +104,7 @@
 
 uint8_t MapGetAct(uint8_t act, uint8_t act_low, uint8_t act_high);
 uint8_t MapGetActTranslate(uint8_t act, uint8_t act_low, uint8_t act_high);
+/** //deprecated, while the idea kept for a while
 void MapWriteTurn(uint8_t queue_num, uint8_t turn);
 void MapWriteCaseA(uint8_t queue_num, uint8_t casea);
 void MapWriteUntilA(uint8_t queue_num, uint8_t untila);
@@ -115,7 +116,7 @@ uint8_t MapReadTurn(uint8_t queue_num);
 
 uint8_t gMazeMapNum=0; ///POSISI ROBOT SUDAH DIMANA
 uint8_t gMazeMapTot=10;///TOTAL MAPPING
-
+**/
 uint8_t gInverted = 0;
 
 #define OCR_LEFT	OCR1A
