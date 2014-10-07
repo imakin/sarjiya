@@ -90,7 +90,15 @@
 #define DRIVE_LEFT					3
 #define DRIVE_RIGHT					0
 
+#define DELAY_50_MS					0
+#define DELAY_100_MS				1
+#define DELAY_200_MS				2
 #define DELAY_300_MS				3
+#define DELAY_400_MS				4
+#define DELAY_500_MS				5
+#define DELAY_600_MS				6
+#define DELAY_700_MS				7
+
 
 
 
@@ -169,6 +177,7 @@ void SettingSetPIDSpeedKD(void);
 void SettingErrorMenu(void);
 void SettingSetPIDSpeedMenu(void);
 void Run(void);
+void RunInverse(void);
 void RunOnce(uint8_t speed, uint8_t kp, uint8_t kd);
 void RunMapping(uint8_t mulai);
 void RunLearn(void);
@@ -176,6 +185,11 @@ void RunStart01(void);
 void RunEb00ke01(void);
 void RunEb01ke02(void);
 void RunEb02ke03(void);
+void RunEb03ke04(void);
+void RunIv00ke01(void);
+void RunIv01ke02(void);
+void RunIv02ke03(void);
+void RunIv03ke04(void);
 void RunProgram(void);
 void RunWhileNormal(uint8_t sampling_limit);
 void RunWhileNormalDebug(uint8_t sampling_limit);
@@ -228,6 +242,7 @@ uint8_t GetChild(uint8_t parent, uint8_t childid);
 #define GetParentCursor(_ns)	GetCursor(GetParent(_ns))
 #define STATE_MENU								0 ///THIS ONE GOES 0, as 1~9 div 10 will be 0
 #define STATE_RUN								7	///GUA BERI!
+#define STATE_RUN_INVERSE						8
 #define STATE_CALIBRATE							5 ///DIBIKIN DI MENU UTAMA, KRN SERING DILAKUKAN
 #define STATE_RUN_MAPPING						9
 #define STATE_RUN_MAPPING_C1					2
@@ -236,7 +251,7 @@ uint8_t GetChild(uint8_t parent, uint8_t childid);
 #define STATE_RUN_MAPPING_C3					4
 #define STATE_RUN_MAPPING_EBOTEC				100
 
-#define STATE_RUN_TEST_COUNTER					8
+#define STATE_RUN_TEST_COUNTER					100
 
 #define STATE_SETTING_MENU						6
 #define STATE_SETTING_DEBUG_MENU				61
@@ -279,6 +294,7 @@ int main(void)
 		if (gState == STATE_CALIBRATE)						Calibrate();
 		if (gState == STATE_MENU)							Menu();
 		if (gState == STATE_RUN)							Run();
+		if (gState == STATE_RUN_INVERSE)					RunInverse();
 		if (gState == STATE_RUN_MAPPING)					RunMapping(0);
 		if (gState == STATE_RUN_MAPPING_C1)					RunMapping(1);
 		if (gState == STATE_RUN_MAPPING_C2)					RunMapping(2);
@@ -338,7 +354,7 @@ void RunMapping(uint8_t mulai)
 	_delay_ms(250);
 	if (mulai==0)
 	{
-		RunProgram();
+		Run();
 	}
 	else if (mulai==1)
 	{
@@ -378,8 +394,8 @@ void RunLearn()
 	gScrollNum = 1;
 	gScrollMax = 3;
 	
-	while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
-	{		
+	while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
+	{
 		ReStrainScroll();
 		PrintScroll(gScrollNum,gScrollMax);
 		
@@ -438,9 +454,9 @@ void RunLearn()
 	act=100;///No button have set
 	if (mode == 0)
 	{
-		wp_current = EepromRead(ADDRESS_BLOCK_MAP_WAYPOINTS_NUM);
+		wp_number = EepromRead(ADDRESS_BLOCK_MAP_WAYPOINTS_NUM);
 		
-		if (wp_current == 0)
+		if (wp_number == 0)
 		{
 			///No saved data found
 			mode = 2;
@@ -469,6 +485,7 @@ void RunLearn()
 		if (mode==0 || mode==2)
 		{
 			wp_number++;
+			EepromWrite(ADDRESS_BLOCK_MAP_WAYPOINTS_NUM, wp_number);
 		}
 		else
 		{
@@ -477,12 +494,8 @@ void RunLearn()
 			LCDstring((uint8_t*)("Waypoint to edit"),16);
 			gScrollNum = wp_current;
 			gScrollMax = wp_number;
-			while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
+			while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
 			{
-				if (gScrollNum<0)
-					gScrollNum = gScrollMax;
-				else if (gScrollNum>gScrollMax)
-					gScrollNum = 0;
 				LCDGotoXY(0,1);
 				LCDstring((uint8_t*)("<<     ###    >>"),16);
 				cetak_bil(gScrollNum,7,1,3);
@@ -494,21 +507,33 @@ void RunLearn()
 				}
 				else if (act==BUTTON_NEXT_DOWN)
 				{
-					gScrollNum++;
+					if (gScrollNum>gScrollMax)
+						gScrollNum = 0;
+					else
+						gScrollNum++;
 				}
 				else if (act==BUTTON_PREV_DOWN)
 				{
-					gScrollNum--;
+					if (gScrollNum == 0)
+						gScrollNum = gScrollMax;
+					else
+						gScrollNum--;
 				}
-				else
+				else if (act==BUTTON_BACK_DOWN)
 				{
 					LCDGotoXY(0,0);
 					LCDstring((uint8_t*)("MAPPING DONE... "),16);
+					gState=STATE_MENU; gScrollNum = GetCursor(STATE_RUN);
 					_delay_ms(2000);
 					return;
 				}
+				
 			}
 		}
+		_delay_ms(200); act=100;
+		///Pre step: set act
+		mapping_act_set_l = 0;
+		mapping_act_set_h = 0;
 		
 		/// 1st step : Set ForceMove Direction
 		LCDGotoXY(0,0);
@@ -516,7 +541,7 @@ void RunLearn()
 		gScrollNum = 1;
 		gScrollMax = 4;
 			
-		while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
+		while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
 		{
 			ReStrainScroll();
 			if (gScrollNum == 1)
@@ -568,23 +593,24 @@ void RunLearn()
 			{
 				gScrollNum--;
 			}
-			else
+			else if (act==BUTTON_BACK_DOWN)
 			{
 				LCDGotoXY(0,0);
 				LCDstring((uint8_t*)("MAPPING DONE... "),16);
+				gState=STATE_MENU; gScrollNum = GetCursor(STATE_RUN);
 				_delay_ms(2000);
 				return;
 			}
-				
+			
 		}/// Done 1st step : Set ForceMove Direction
-		
+		_delay_ms(200); act=100;
 		///2nd step : Set PWM right
 		LCDGotoXY(0,0);
 		LCDstring((uint8_t*)("Set RightPWM  [B"),16);
 		
 		gScrollNum = 1;
 		gScrollMax = 8;
-		while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
+		while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
 		{
 			ReStrainScroll();
 			if (gScrollNum == 1)
@@ -660,15 +686,17 @@ void RunLearn()
 			{
 				gScrollNum--;
 			}
-			else
+			else if (act==BUTTON_BACK_DOWN)
 			{
 				LCDGotoXY(0,0);
 				LCDstring((uint8_t*)("MAPPING DONE... "),16);
+				gState=STATE_MENU; gScrollNum = GetCursor(STATE_RUN);
 				_delay_ms(2000);
 				return;
 			}
+			
 		}///Done 2nd step : Set PWM right
-		
+		_delay_ms(200); act=100;
 		
 		///3nd step : Set PWM Left
 		LCDGotoXY(0,0);
@@ -676,7 +704,7 @@ void RunLearn()
 		
 		gScrollNum = 1;
 		gScrollMax = 8;
-		while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
+		while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
 		{
 			ReStrainScroll();
 			if (gScrollNum == 1)
@@ -752,15 +780,17 @@ void RunLearn()
 			{
 				gScrollNum--;
 			}
-			else
+			else if (act==BUTTON_BACK_DOWN)
 			{
 				LCDGotoXY(0,0);
 				LCDstring((uint8_t*)("MAPPING DONE... "),16);
+				gState=STATE_MENU; gScrollNum = GetCursor(STATE_RUN);
 				_delay_ms(2000);
 				return;
 			}
+			
 		}///Done 3rd step : Set PWM left
-		
+		_delay_ms(200); act=100;
 		
 		///4th step : Set Time ms
 		LCDGotoXY(0,0);
@@ -768,7 +798,7 @@ void RunLearn()
 		
 		gScrollNum = 1;
 		gScrollMax = 8;
-		while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
+		while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
 		{
 			ReStrainScroll();
 			if (gScrollNum == 1)
@@ -844,22 +874,24 @@ void RunLearn()
 			{
 				gScrollNum--;
 			}
-			else
+			else if (act==BUTTON_BACK_DOWN)
 			{
 				LCDGotoXY(0,0);
 				LCDstring((uint8_t*)("MAPPING DONE... "),16);
+				gState=STATE_MENU; gScrollNum = GetCursor(STATE_RUN);
 				_delay_ms(2000);
 				return;
 			}
+			
 		}///Done 4th step : Set Time ms
-		
+		_delay_ms(200); act=100;
 		///5th step : Set Next run sampling
 		LCDGotoXY(0,0);
 		LCDstring((uint8_t*)("Set Nextrun S [B"),16);
 		
 		gScrollNum = 1;
 		gScrollMax = 8;
-		while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
+		while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
 		{
 			ReStrainScroll();
 			if (gScrollNum == 1)
@@ -935,14 +967,16 @@ void RunLearn()
 			{
 				gScrollNum--;
 			}
-			else
+			else if (act==BUTTON_BACK_DOWN)
 			{
 				LCDGotoXY(0,0);
 				LCDstring((uint8_t*)("MAPPING DONE... "),16);
+				gState=STATE_MENU; gScrollNum = GetCursor(STATE_RUN);
 				_delay_ms(2000);
 				return;
 			}
 		}///Done 5th step : Set Next run sampling
+		_delay_ms(200); act=100;
 		
 		///6th step : Set Next run Sensor Config
 		LCDGotoXY(0,0);
@@ -950,7 +984,7 @@ void RunLearn()
 		
 		gScrollNum = 1;
 		gScrollMax = 2;
-		while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
+		while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
 		{
 			ReStrainScroll();
 			if (gScrollNum == 1)
@@ -978,22 +1012,23 @@ void RunLearn()
 			{
 				gScrollNum--;
 			}
-			else
+			else if (act==BUTTON_BACK_DOWN)
 			{
 				LCDGotoXY(0,0);
 				LCDstring((uint8_t*)("MAPPING DONE... "),16);
+				gState=STATE_MENU; gScrollNum = GetCursor(STATE_RUN);
 				_delay_ms(2000);
 				return;
 			}
 		}///Done 6th step : Set Next run Sensor Config
-		
+		_delay_ms(200); act=100;
 		///7th step : Set Next run use until condition occur
 		LCDGotoXY(0,0);
 		LCDstring((uint8_t*)("UntilCondtion [B"),16);
 		
 		gScrollNum = 1;
 		gScrollMax = 2;
-		while (act!=BUTTON_ENTER_DOWN || act!=BUTTON_BACK_DOWN)
+		while (act!=BUTTON_ENTER_DOWN && act!=BUTTON_BACK_DOWN)
 		{
 			ReStrainScroll();
 			if (gScrollNum == 1)
@@ -1015,7 +1050,7 @@ void RunLearn()
 					///Get condition
 					LCDGotoXY(0,0);
 					LCDstring((uint8_t*)("OK] Cap. Sensor "),16);
-					_delay_ms(200);
+					_delay_ms(200); act=100;
 					uint8_t l_Num;
 					while (!ButtonEnter())
 					{
@@ -1045,15 +1080,17 @@ void RunLearn()
 			{
 				gScrollNum--;
 			}
-			else
+			else if (act==BUTTON_BACK_DOWN)
 			{
 				LCDGotoXY(0,0);
 				LCDstring((uint8_t*)("MAPPING DONE... "),16);
+				gState=STATE_MENU; gScrollNum = GetCursor(STATE_RUN);
 				_delay_ms(2000);
 				return;
 			}
+			
 		}///Done 7th step : Set Next run use until condition occur
-		
+		_delay_ms(200); act=100;
 		///SAVE it right away to eeprom
 		EepromWrite(ADDRESS_BLOCK_MAP_ACT_LOW+wp_current, mapping_act_set_l);
 		EepromWrite(ADDRESS_BLOCK_MAP_ACT_HIGH+wp_current, mapping_act_set_h);
@@ -1062,8 +1099,8 @@ void RunLearn()
 		LCDstring((uint8_t*)("  Waypoint ###  "),16);
 		LCDstring((uint8_t*)("   mapping set  "),16);
 		cetak_bil(wp_current, 8, 0, 3);
-		_delay_ms(500);
-		while(ButtonIsNotPressed);
+		//~ _delay_ms(500);
+		while(ButtonIsNotPressed());
 		
 		//Run it single role
 		DriveTurn(	MapGetActTranslate(MAP_GET_ACT_DIRECTION, mapping_act_set_l, mapping_act_set_h), 
@@ -1112,7 +1149,8 @@ void RunLearn()
 		///back to default
 		SetMinim();
 		
-		wp_current++;
+		if (mode!=1)
+			wp_current++;
 	}///end while (gState=STATE_RUN_LEARN)
 	return;
 }
@@ -1253,8 +1291,8 @@ void RunEb00ke01()
 	RunWhileNormal(5);
 	
 	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveMove(40,40);
+	_delay_ms(400);
 	
 	RunWhileNormal(5);
 	
@@ -1277,14 +1315,14 @@ void RunEb00ke01()
 	RunWhileNormal(5);
 	
 	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveMove(40,40);
+	_delay_ms(350);
 	
 	RunWhileNormal(5);
 	
 	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveMove(40,40);
+	_delay_ms(350);
 	
 	RunWhileNormal(5);
 	
@@ -1358,8 +1396,101 @@ void RunEb01ke02()
 	DriveMove(0,0);
 	counter=0;
 	
+	//~ RunEb02ke03()
+	///special case that this checkpoint start different from RunEb03ke03 function
+	SetMinim();
 	
+	//~ _delay_ms(2000);
 	
+	DirTurnLeft();
+	DriveMove(30,30);
+	_delay_ms(200);
+	
+	RunWhileNormal(5);
+	
+	DirTurnLeft();
+	DriveMove(30,30);
+	_delay_ms(350);
+	
+	RunWhileNormal(5);
+	
+	DirForward();
+	DriveMove(30,30);
+	_delay_ms(200);
+	
+	RunWhileNormal(5);
+	
+	///BUNDERAN ITEM
+	DirForward();
+	DriveMove(7,95);
+	
+	_delay_ms(350);
+	///DONE
+	
+	RunWhileNormal(5);
+	
+	//~ DirTurnRight();
+	//~ DriveMove(30,30);
+	//~ _delay_ms(200);
+	
+	DirForward();
+	DriveMove(90,20);
+	_delay_ms(200);
+	
+	///popjjopjopjoipjoipjoijoij
+	//~ DriveMove(0,0);
+	//~ _delay_ms(2000);
+	
+	RunWhileNormal(10);
+	
+	///BLACKWHITE
+	SetMinimInverse();
+	
+	RunWhileNormal(5);
+	
+	DirTurnRight();
+	DriveMove(30,30);
+	_delay_ms(300);
+	
+	DirForward();
+	DriveMove(30,30);
+	_delay_ms(200);
+	
+	DirTurnRight();
+	DriveMove(30,30);
+	_delay_ms(300);
+	
+	RunWhileNormal(5);
+	DirForward();
+	DriveMove(30,30);
+	_delay_ms(300);
+	///DONE
+	//~ RunWhileNormal(5);
+	SetMinim();
+	
+	RunWhileNormal(5);
+	//~ RunWhileNormal(5);
+	
+	DirTurnLeft();
+	DriveMove(40,40);
+	_delay_ms(310);
+	
+	//~ DriveMove(0,0);
+	DirForward();
+	DriveMove(30,30);
+	_delay_ms(200);
+	
+	//~ while(ButtonIsNotPressed());
+	//~ _delay_ms(100);
+	RunWhileNormal(5);
+	
+	DirTurnRight();
+	DriveMove(60,60);
+	_delay_ms(400);
+	
+	RunWhileNormal(10);
+	
+	/*
 	SetMinim();
 	///CP 2
 	//~ _delay_ms(2000);
@@ -1403,7 +1534,7 @@ void RunEb01ke02()
 	
 	DriveMove(0,0);
 	
-	while (ButtonIsNotPressed());
+	while (ButtonIsNotPressed());*/
 }
 void RunEb02ke03()
 {
@@ -1420,32 +1551,36 @@ void RunEb02ke03()
 	
 	DirTurnLeft();
 	DriveMove(30,30);
-	_delay_ms(300);
+	_delay_ms(350);
 	
 	RunWhileNormal(5);
 	
 	DirForward();
 	DriveMove(30,30);
-	_delay_ms(300);
+	_delay_ms(200);
 	
 	RunWhileNormal(5);
 	
 	///BUNDERAN ITEM
 	DirForward();
-	DriveMove(5,80);
+	DriveMove(7,95);
 	
-	_delay_ms(400);
+	_delay_ms(350);
 	///DONE
 	
 	RunWhileNormal(5);
 	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(300);
+	//~ DirTurnRight();
+	//~ DriveMove(30,30);
+	//~ _delay_ms(200);
 	
 	DirForward();
-	DriveMove(30,30);
+	DriveMove(90,20);
 	_delay_ms(200);
+	
+	///popjjopjopjoipjoipjoijoij
+	//~ DriveMove(0,0);
+	//~ _delay_ms(2000);
 	
 	RunWhileNormal(10);
 	
@@ -1465,17 +1600,110 @@ void RunEb02ke03()
 	DirTurnRight();
 	DriveMove(30,30);
 	_delay_ms(300);
-	
+	RunWhileNormal(5);
 	DirForward();
 	DriveMove(30,30);
-	_delay_ms(700);
+	_delay_ms(300);
 	///DONE
 	//~ RunWhileNormal(5);
 	SetMinim();
 	
 	RunWhileNormal(5);
+	//~ RunWhileNormal(5);
 	
-	//~ DirTurnRight
+	DirTurnLeft();
+	DriveMove(40,40);
+	_delay_ms(310);
+	
+	//~ DriveMove(0,0);
+	DirForward();
+	DriveMove(30,30);
+	_delay_ms(200);
+	
+	//~ while(ButtonIsNotPressed());
+	//~ _delay_ms(100);
+	RunWhileNormal(5);
+	
+	DirTurnRight();
+	DriveMove(60,60);
+	_delay_ms(400);
+	
+	RunWhileNormal(10);
+	
+}
+
+
+
+void RunIv00ke01()
+{
+	gInverted = 1;
+	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_LEFT,40,40,DELAY_400_MS,gInverted);
+	
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(5);
+	
+	DirTurnRight();
+	DriveMove(30,30);
+	_delay_ms(300);
+	
+	RunWhileNormal(5);
+	
+	DirTurnLeft();
+	DriveMove(40,40);
+	_delay_ms(350);
+	
+	RunWhileNormal(5);
+	
+	DirTurnLeft();
+	DriveMove(40,40);
+	_delay_ms(350);
+	
+	RunWhileNormal(5);
+	
+	DirTurnRight();
+	DriveMove(30,30);
+	_delay_ms(300);
+	
+	RunWhileNormal(5);
+	
+	DirTurnRight();
+	DriveMove(30,30);
+	_delay_ms(300);
+	
+	RunWhileNormal(5);
+	
+	RunEb01ke02();
+	
+	while (ButtonIsNotPressed());
+	
 }
 
 void RunStart01(void)
@@ -1611,29 +1839,23 @@ void RunTestCounter()
 	OCR1B=0;
 	gState = STATE_MENU;
 }
-
+void RunInverse(void)
+{
+	gInverted = 1;
+	gState = STATE_RUN;
+	return;
+}
 void Run()
 {
-	_delay_ms(250);
-	SensorReadDigital();
-	DriveMove(0,0);
-	DriveTurn(DIR_FORWARD,	60,60,2,gInverted);
-	DriveTurn(DIR_RIGHT,	52,52,2,gInverted);
-	DriveTurn(DIR_FORWARD,	30,30,2,gInverted);
-	DriveTurn(DIR_RIGHT,	52,52,2,gInverted);
-	DriveTurn(DIR_FORWARD,	60,60,2,gInverted);
-	
-	DriveMove(0,0);
-	while (ButtonIsNotPressed());
-	
+	gInverted = 0;
 	
 	uint8_t wp_current=0;
 	uint8_t wp_number =0;
 	wp_number = EepromRead(ADDRESS_BLOCK_MAP_WAYPOINTS_NUM);
 	while (wp_current<wp_number)
 	{
-		uint8_t act_l = EepromRead(ADDRESS_BLOCK_MAP_ACT_LOW	+	wp_number);
-		uint8_t act_h = EepromRead(ADDRESS_BLOCK_MAP_ACT_HIGH	+	wp_number);
+		uint8_t act_l = EepromRead(ADDRESS_BLOCK_MAP_ACT_LOW	+	wp_current);
+		uint8_t act_h = EepromRead(ADDRESS_BLOCK_MAP_ACT_HIGH	+	wp_current);
 				
 		///at this waypoint, waypoint asks robot to force drive
 		DriveTurn(	MapGetActTranslate(MAP_GET_ACT_DIRECTION, act_l, act_h), 
@@ -2247,7 +2469,53 @@ void SetComplex()
 }
 void SetMinim()
 {
-	
+	gCaseN = 44;
+	gCaseH[ 0] = 0b10000000; gCaseL[ 0] = 0b00000000; gCaseV[ 0] = 15;
+	gCaseH[ 1] = 0b11000000; gCaseL[ 1] = 0b00000000; gCaseV[ 1] = 14;
+	gCaseH[ 2] = 0b11100000; gCaseL[ 2] = 0b00000000; gCaseV[ 2] = 14;
+	gCaseH[ 3] = 0b01000000; gCaseL[ 3] = 0b00000000; gCaseV[ 3] = 14;
+	gCaseH[ 4] = 0b01100000; gCaseL[ 4] = 0b00000000; gCaseV[ 4] = 12;
+	gCaseH[ 5] = 0b01110000; gCaseL[ 5] = 0b00000000; gCaseV[ 5] = 12;
+	gCaseH[ 6] = 0b00100000; gCaseL[ 6] = 0b00000000; gCaseV[ 6] = 12;
+	gCaseH[ 7] = 0b00110000; gCaseL[ 7] = 0b00000000; gCaseV[ 7] = 10;
+	gCaseH[ 8] = 0b00111000; gCaseL[ 8] = 0b00000000; gCaseV[ 8] = 10;
+	gCaseH[ 9] = 0b00010000; gCaseL[ 9] = 0b00000000; gCaseV[ 9] = 10;
+	gCaseH[10] = 0b00011000; gCaseL[10] = 0b00000000; gCaseV[10] = 8;
+	gCaseH[11] = 0b00011100; gCaseL[11] = 0b00000000; gCaseV[11] = 8;
+	gCaseH[12] = 0b00001000; gCaseL[12] = 0b00000000; gCaseV[12] = 8;
+	gCaseH[13] = 0b00001100; gCaseL[13] = 0b00000000; gCaseV[13] = 6;
+	gCaseH[14] = 0b00001110; gCaseL[14] = 0b00000000; gCaseV[14] = 6;
+	gCaseH[15] = 0b00000100; gCaseL[15] = 0b00000000; gCaseV[15] = 6;
+	gCaseH[16] = 0b00000110; gCaseL[16] = 0b00000000; gCaseV[16] = 4;
+	gCaseH[17] = 0b00000111; gCaseL[17] = 0b00000000; gCaseV[17] = 4;
+	gCaseH[18] = 0b00000010; gCaseL[18] = 0b00000000; gCaseV[18] = 4;
+	gCaseH[19] = 0b00000011; gCaseL[19] = 0b00000000; gCaseV[19] = 2;
+	gCaseH[20] = 0b00000011; gCaseL[20] = 0b10000000; gCaseV[20] = 0;
+	gCaseH[21] = 0b00000001; gCaseL[21] = 0b00000000; gCaseV[21] = 0;
+	gCaseH[22] = 0b00000001; gCaseL[22] = 0b10000000; gCaseV[22] = 0;
+	gCaseH[23] = 0b00000001; gCaseL[23] = 0b11000000; gCaseV[23] = 0;
+	gCaseH[24] = 0b00000000; gCaseL[24] = 0b10000000; gCaseV[24] = 0;
+	gCaseH[25] = 0b00000000; gCaseL[25] = 0b11000000; gCaseV[25] = -2;
+	gCaseH[26] = 0b00000000; gCaseL[26] = 0b11100000; gCaseV[26] = -4;
+	gCaseH[27] = 0b00000000; gCaseL[27] = 0b01000000; gCaseV[27] = -4;
+	gCaseH[28] = 0b00000000; gCaseL[28] = 0b01100000; gCaseV[28] = -4;
+	gCaseH[29] = 0b00000000; gCaseL[29] = 0b01110000; gCaseV[29] = -6;
+	gCaseH[30] = 0b00000000; gCaseL[30] = 0b00100000; gCaseV[30] = -6;
+	gCaseH[31] = 0b00000000; gCaseL[31] = 0b00110000; gCaseV[31] = -6;
+	gCaseH[32] = 0b00000000; gCaseL[32] = 0b00111000; gCaseV[32] = -8;
+	gCaseH[33] = 0b00000000; gCaseL[33] = 0b00010000; gCaseV[33] = -8;
+	gCaseH[34] = 0b00000000; gCaseL[34] = 0b00011000; gCaseV[34] = -8;
+	gCaseH[35] = 0b00000000; gCaseL[35] = 0b00011100; gCaseV[35] = -10;
+	gCaseH[36] = 0b00000000; gCaseL[36] = 0b00001000; gCaseV[36] = -10;
+	gCaseH[37] = 0b00000000; gCaseL[37] = 0b00001100; gCaseV[37] = -10;
+	gCaseH[38] = 0b00000000; gCaseL[38] = 0b00001110; gCaseV[38] = -12;
+	gCaseH[39] = 0b00000000; gCaseL[39] = 0b00000100; gCaseV[39] = -12;
+	gCaseH[40] = 0b00000000; gCaseL[40] = 0b00000110; gCaseV[40] = -12;
+	gCaseH[41] = 0b00000000; gCaseL[41] = 0b00000111; gCaseV[41] = -14;
+	gCaseH[42] = 0b00000000; gCaseL[42] = 0b00000010; gCaseV[42] = -14;
+	gCaseH[43] = 0b00000000; gCaseL[43] = 0b00000011; gCaseV[43] = -14;
+	gCaseH[44] = 0b00000000; gCaseL[44] = 0b00000001; gCaseV[44] = -15;
+/**
 	gCaseN = 30;
 	gCaseH[ 0] = 0b10000000; gCaseL[ 0] = 0b00000000; gCaseV[ 0] = 15;
 	gCaseH[ 1] = 0b11000000; gCaseL[ 1] = 0b00000000; gCaseV[ 1] = 14;
@@ -2263,9 +2531,9 @@ void SetMinim()
 	gCaseH[11] = 0b00000110; gCaseL[11] = 0b00000000; gCaseV[11] = 4;
 	gCaseH[12] = 0b00000010; gCaseL[12] = 0b00000000; gCaseV[12] = 4;
 	gCaseH[13] = 0b00000011; gCaseL[13] = 0b00000000; gCaseV[13] = 2;
-	gCaseH[14] = 0b00000001; gCaseL[14] = 0b00000000; gCaseV[14] = 1;
+	gCaseH[14] = 0b00000001; gCaseL[14] = 0b00000000; gCaseV[14] = 0;
 	gCaseH[15] = 0b00000001; gCaseL[15] = 0b10000000; gCaseV[15] = 0;
-	gCaseH[16] = 0b00000000; gCaseL[16] = 0b10000000; gCaseV[16] = -1;
+	gCaseH[16] = 0b00000000; gCaseL[16] = 0b10000000; gCaseV[16] = 0;
 	gCaseH[17] = 0b00000000; gCaseL[17] = 0b11000000; gCaseV[17] = -2;
 	gCaseH[18] = 0b00000000; gCaseL[18] = 0b01000000; gCaseV[18] = -4;
 	gCaseH[19] = 0b00000000; gCaseL[19] = 0b01100000; gCaseV[19] = -4;
@@ -2280,6 +2548,8 @@ void SetMinim()
 	gCaseH[28] = 0b00000000; gCaseL[28] = 0b00000010; gCaseV[28] = -14;
 	gCaseH[29] = 0b00000000; gCaseL[29] = 0b00000011; gCaseV[29] = -14;
 	gCaseH[30] = 0b00000000; gCaseL[30] = 0b00000001; gCaseV[30] = -15;
+**/
+	
 }
 void SetMinimInverse()
 {
@@ -2507,10 +2777,10 @@ void DriveTurn(uint8_t dir, uint8_t pwm_left, uint8_t pwm_right, uint8_t time_ms
 			dir = DRIVE_LEFT;
 	}
 	
-			if (dir == DRIVE_LEFT)		DirTurnLeft();
-	else 	if (dir == DRIVE_RIGHT)		DirTurnRight();
-	else 	if (dir == DRIVE_FORWARD)	DirForward();
-	else 	if (dir == DRIVE_BACKWARD)	DirBackward();
+	if (dir == DRIVE_LEFT)		DirTurnLeft();
+	else if (dir == DRIVE_RIGHT)	DirTurnRight();
+	else if (dir == DRIVE_FORWARD)	DirForward();
+	else if (dir == DRIVE_BACKWARD)	DirBackward();
 	
 	if (inverted_turn)
 	{
@@ -2804,6 +3074,26 @@ void Menu()
 			if (act == BUTTON_ENTER_DOWN)
 			{
 				gState = STATE_RUN;
+				gScrollNum = 1;
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+		}
+		else if (gScrollNum == GetCursor(STATE_RUN_INVERSE))
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("RUN INVERSE   0B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gState = STATE_RUN_INVERSE;
 				gScrollNum = 1;
 			}
 			else if (act == BUTTON_NEXT_DOWN)
