@@ -1,10 +1,6 @@
 # Hey Emacs, this is a -*- makefile -*-
 #----------------------------------------------------------------------------
-<<<<<<< HEAD
 # WinAVR Makefile Template written by Eric B. Weddington, Jörg Wunsch, et al.
-=======
-# WinAVR Makefile Template written by Eric B. Weddington, Jï¿½rg Wunsch, et al.
->>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 #
 # Released to the Public Domain
 #
@@ -159,11 +155,7 @@ CFLAGS += -funsigned-char
 CFLAGS += -funsigned-bitfields
 CFLAGS += -fpack-struct
 CFLAGS += -fshort-enums
-<<<<<<< HEAD
 #~ CFLAGS += -Wall
-=======
-CFLAGS += -Wall
->>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
 CFLAGS += -Wstrict-prototypes
 #CFLAGS += -mshort-calls
 #CFLAGS += -fno-unit-at-a-time
@@ -628,13 +620,14 @@ build elf hex eep lss sym coff extcoff \
 clean clean_list program debug gdb-config
 
 
-<<<<<<< HEAD
 
 flash :
 	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude.conf" -U flash:w:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a -U flash:v:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a
 fuse :
 	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude.conf" -U lfuse:w:0xFF:m -U hfuse:w:0xC1:m 
+
+#di ubuntu 14.04 format configurasi beda dikit
+fuselatest :
+	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/etc/avrdude.conf" -U lfuse:w:0xFF:m -U hfuse:w:0xC1:m 
 flashlatest :
-	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude-latest.conf" -U flash:w:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a -U flash:v:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a
-=======
->>>>>>> 8073276461a254b68bf9110ac059fa859b7e8ffd
+	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/etc/avrdude.conf" -U flash:w:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a -U flash:v:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a
