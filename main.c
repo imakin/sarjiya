@@ -95,6 +95,8 @@
 #define DELAY_100_MS				1
 #define DELAY_200_MS				2
 #define DELAY_300_MS				3
+#define DELAY_310_MS				31
+#define DELAY_350_MS				35
 #define DELAY_400_MS				4
 #define DELAY_500_MS				5
 #define DELAY_600_MS				6
@@ -1267,81 +1269,43 @@ void SettingDebugPrintlog2(char* nama,int8_t data[][2])
 
 void RunEb00ke01()
 {
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnLeft();
-	DriveMove(40,40);
-	_delay_ms(300);
+	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnLeft();
-	DriveMove(40,40);
-	_delay_ms(350);
+	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnLeft();
-	DriveMove(40,40);
-	_delay_ms(350);
+	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
 	
@@ -1353,28 +1317,15 @@ void RunEb00ke01()
 }
 void RunEb01ke02()
 {
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(300);
-	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
 	RunWhileNormal(5);
 	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(300);
-	
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
 	RunWhileNormal(20);
 	
-	DirForward();
-	DriveMove(60,10);
-	_delay_ms(100);
-	
-	//~ DriveMove(0,0);
-	//~ _delay_ms(1000);
+	DriveTurn(DIR_FORWARD,60,10,DELAY_100_MS,gInverted);
 	
 	SetComplex();
-	//~ RunWhileNormal(43);
-	
 	counter=0;
 	SensorReadDigital();
 	PIDGetError();
@@ -1407,47 +1358,28 @@ void RunEb01ke02()
 	///special case that this checkpoint start different from RunEb03ke03 function
 	SetMinim();
 	
-	//~ _delay_ms(2000);
-	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
+	DriveTurn(DIR_LEFT,30,30,DELAY_200_MS,gInverted);
 	RunWhileNormal(5);
 	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(350);
-	
+	//~ DirTurnLeft();
+	//~ DriveMove(30,30);
+	//~ _delay_ms(350);
+	DriveTurn(DIR_LEFT,30,30,DELAY_350_MS,gInverted);
 	RunWhileNormal(5);
 	
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
 	RunWhileNormal(5);
 	
 	///BUNDERAN ITEM
-	DirForward();
+	/**DirForward();
 	DriveMove(7,95);
-	
-	_delay_ms(350);
+	_delay_ms(350);**/
+	DriveTurn(DIR_FORWARD,7,95,DELAY_350_MS,gInverted);
 	///DONE
 	
 	RunWhileNormal(5);
 	
-	//~ DirTurnRight();
-	//~ DriveMove(30,30);
-	//~ _delay_ms(200);
-	
-	DirForward();
-	DriveMove(90,20);
-	_delay_ms(200);
-	
-	///popjjopjopjoipjoipjoijoij
-	//~ DriveMove(0,0);
-	//~ _delay_ms(2000);
-	
+	DriveTurn(DIR_FORWARD,90,20,DELAY_200_MS,gInverted);
 	RunWhileNormal(10);
 	
 	///BLACKWHITE
@@ -1455,140 +1387,35 @@ void RunEb01ke02()
 	
 	RunWhileNormal(5);
 	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(120,40,DELAY_300_MS,gInverted);
 	
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
-	RunWhileNormal(5);
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(300);
+	DriveTurn(50,50,DELAY_300_MS,gInverted);
 	///DONE
-	//~ RunWhileNormal(5);
 	SetMinim();
 	
-	RunWhileNormal(5);
-	//~ RunWhileNormal(5);
-	
-	DirTurnLeft();
-	DriveMove(40,40);
-	_delay_ms(310);
-	
-	//~ DriveMove(0,0);
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
-	//~ while(ButtonIsNotPressed());
-	//~ _delay_ms(100);
-	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(60,60);
-	_delay_ms(300);
-	
-	RunWhileNormal(10);
-	
-	/*
-	SetMinim();
-	///CP 2
-	//~ _delay_ms(2000);
-	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
-	RunWhileNormal(5);
-	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(300);
-	
-	RunWhileNormal(5);
-	
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(300);
-	
-	RunWhileNormal(5);
-	
-	DirForward();
-	DriveMove(5,70);
-	_delay_ms(400);
-	
-	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
-	RunWhileNormal(5);
-	
-	
-	
-	
-	DriveMove(0,0);
-	
-	while (ButtonIsNotPressed());*/
+	RunEb03ke04();
 }
 void RunEb02ke03()
 {
 	SetMinim();
 	RunWhileNormal(5);
 	
-	//~ _delay_ms(2000);
-	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
+	DriveTurn(DIR_LEFT,30,30,DELAY_200_MS,gInverted);
 	RunWhileNormal(5);
 	
-	DirTurnLeft();
-	DriveMove(30,30);
-	_delay_ms(350);
-	
+	DriveTurn(DIR_LEFT,30,30,DELAY_350_MS,gInverted);
 	RunWhileNormal(5);
 	
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
 	RunWhileNormal(5);
 	
 	///BUNDERAN ITEM
-	DirForward();
-	DriveMove(7,95);
-	
-	_delay_ms(350);
+	DriveTurn(DIR_FORWARD,7,95,DELAY_350_MS,gInverted);
 	///DONE
 	
 	RunWhileNormal(5);
 	
-	//~ DirTurnRight();
-	//~ DriveMove(30,30);
-	//~ _delay_ms(200);
-	
-	DirForward();
-	DriveMove(90,20);
-	_delay_ms(200);
-	
-	///popjjopjopjoipjoipjoijoij
-	//~ DriveMove(0,0);
-	//~ _delay_ms(2000);
-	
+	DriveTurn(DIR_FORWARD,90,20,DELAY_200_MS,gInverted);
 	RunWhileNormal(10);
 	
 	///BLACKWHITE
@@ -1596,38 +1423,13 @@ void RunEb02ke03()
 	
 	RunWhileNormal(5);
 	
-	DirTurnRight();
-	DriveMove(120,40);
-	_delay_ms(300);
-	
-	DirForward();
-	DriveMove(50,50);
-	_delay_ms(300);
+	DriveTurn(DIR_RIGHT,120,40,DELAY_300_MS,gInverted);
+	DriveTurn(DIR_FORWARD,50,50,DELAY_300_MS,gInverted);
 	///DONE
 	//~ RunWhileNormal(5);
 	SetMinim();
 	
-	RunWhileNormal(5);
-	//~ RunWhileNormal(5);
-	
-	DirTurnLeft();
-	DriveMove(40,40);
-	_delay_ms(310);
-	
-	//~ DriveMove(0,0);
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(200);
-	
-	//~ while(ButtonIsNotPressed());
-	//~ _delay_ms(100);
-	RunWhileNormal(5);
-	
-	DirTurnRight();
-	DriveMove(50,50);
-	_delay_ms(300);
-	
-	RunWhileNormal(10);
+	RunEb03ke04();
 	
 }
 void RunEb03ke04()
@@ -1636,23 +1438,13 @@ void RunEb03ke04()
 	RunWhileNormal(5);
 	//~ RunWhileNormal(5);
 	
-	DirTurnLeft();
-	DriveMove(40,40);
-	_delay_ms(310);
+	DriveTurn(DIR_LEFT,40,40,DELAY_310_MS,gInverted);
 	
-	//~ DriveMove(0,0);
-	DirForward();
-	DriveMove(30,30);
-	_delay_ms(200);
+	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
 	
-	//~ while(ButtonIsNotPressed());
-	//~ _delay_ms(100);
 	RunWhileNormal(5);
 	
-	DirTurnRight();
-	DriveMove(60,60);
-	_delay_ms(300);
-	
+	DriveTurn(DIR_RIGHT,50,50,DELAY_300_MS,gInverted);
 	RunWhileNormal(10);
 	
 }
@@ -2785,7 +2577,7 @@ void DriveMove(uint8_t pwm_ki, uint8_t pwm_ka)
 
 void DriveTurn(uint8_t dir, uint8_t pwm_left, uint8_t pwm_right, uint8_t time_ms, uint8_t inverted_turn)
 {
-	if (inverted_turn)
+	if (inverted_turn!=0)
 	{
 		if (dir == DRIVE_LEFT)
 			dir = DRIVE_RIGHT;
@@ -2798,7 +2590,7 @@ void DriveTurn(uint8_t dir, uint8_t pwm_left, uint8_t pwm_right, uint8_t time_ms
 	else if (dir == DRIVE_FORWARD)	DirForward();
 	else if (dir == DRIVE_BACKWARD)	DirBackward();
 	
-	if (inverted_turn)
+	if (inverted_turn!=0)
 	{
 		DriveMove(pwm_right,pwm_left);
 	}
@@ -2807,22 +2599,26 @@ void DriveTurn(uint8_t dir, uint8_t pwm_left, uint8_t pwm_right, uint8_t time_ms
 		DriveMove(pwm_left,pwm_right);
 	}
 	
-	if (time_ms == 0)
+	if (time_ms == DELAY_50_MS)
 		_delay_ms(50);
-	else if (time_ms == 1)
+	else if (time_ms == DELAY_100_MS)
 		_delay_ms(100);
-	else if (time_ms == 2)
+	else if (time_ms == DELAY_200_MS)
 		_delay_ms(200);
-	else if (time_ms == 3)
+	else if (time_ms == DELAY_300_MS)
 		_delay_ms(300);
-	else if (time_ms == 4)
+	else if (time_ms == DELAY_400_MS)
 		_delay_ms(400);
-	else if (time_ms == 5)
+	else if (time_ms == DELAY_500_MS)
 		_delay_ms(500);
-	else if (time_ms == 6)
+	else if (time_ms == DELAY_600_MS)
 		_delay_ms(600);
-	else
+	else if (time_ms == DELAY_700_MS)
 		_delay_ms(700);
+	else if (time_ms == DELAY_350_MS)
+		_delay_ms(350);
+	else if (time_ms == DELAY_310_MS)
+		_delay_ms(310);
 	
 	return;
 }
