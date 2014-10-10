@@ -184,15 +184,18 @@ void RunInverse(void);
 void RunOnce(uint8_t speed, uint8_t kp, uint8_t kd);
 void RunMapping(uint8_t mulai);
 void RunLearn(void);
+void SetInverse(void);
 void RunStart01(void);
 void RunEb00ke01(void);
 void RunEb01ke02(void);
 void RunEb02ke03(void);
 void RunEb03ke04(void);
-void RunIv00ke01(void);
-void RunIv01ke02(void);
-void RunIv02ke03(void);
-void RunIv03ke04(void);
+void RunFin01ke02(void);
+void RunFin02ke03(void);
+void RunFin03ke04(void);
+void RunFin04ke05(void);
+void RunFin05ke06(void);
+void RunFin00ke01(void);
 void RunProgram(void);
 void RunWhileNormal(uint8_t sampling_limit);
 void RunWhileNormalDebug(uint8_t sampling_limit);
@@ -228,7 +231,7 @@ uint16_t gState;
 uint8_t gScrollNum;
 uint8_t gScrollMax;
 ///MENU2 pnya MAX SCROLL,, ADA BERAPA PILIHAN DIDALAMNYA
-#define MAX_SCROLL_MENU							9
+#define MAX_SCROLL_MENU							16
 #define MAX_SCROLL_SETTING_MENU					6
 #define MAX_SCROLL_SETTING_DEBUG_MENU			3
 #define MAX_SCROLL_SET_PID_SPEED_MENU			5
@@ -244,7 +247,7 @@ uint8_t GetParent(uint16_t numstate);
 uint8_t GetChild(uint8_t parent, uint8_t childid);
 #define GetParentCursor(_ns)	GetCursor(GetParent(_ns))
 #define STATE_MENU								0 ///THIS ONE GOES 0, as 1~9 div 10 will be 0
-#define STATE_RUN_LEARN							1
+#define STATE_SET_INVERSE						1
 #define STATE_RUN_MAPPING_C1					2
 #define STATE_RUN_MAPPING_C2					3
 #define STATE_RUN_MAPPING_C3					4
@@ -252,6 +255,14 @@ uint8_t GetChild(uint8_t parent, uint8_t childid);
 #define STATE_RUN								7	///GUA BERI!
 #define STATE_RUN_INVERSE						8
 #define STATE_CALIBRATE							9 ///DIBIKIN DI MENU UTAMA, KRN SERING DILAKUKAN
+#define STATE_RUN_LEARN							10
+#define STATE_RUN_MAPPING_F0					16
+#define STATE_RUN_MAPPING_F1					15
+#define STATE_RUN_MAPPING_F2					14
+#define STATE_RUN_MAPPING_F3					13
+#define STATE_RUN_MAPPING_F4					12
+#define STATE_RUN_MAPPING_F5					11
+
 #define STATE_RUN_MAPPING						100
 #define STATE_RUN_MAPPING_EBOTEC				100
 #define STATE_RUN_TEST_COUNTER					100
@@ -303,6 +314,13 @@ int main(void)
 		if (gState == STATE_RUN_MAPPING_C2)					RunMapping(2);
 		if (gState == STATE_RUN_MAPPING_C3)					RunMapping(3);
 		if (gState == STATE_RUN_MAPPING_C4)					RunMapping(4);
+		if (gState == STATE_RUN_MAPPING_F0)					RunFin00ke01();
+		if (gState == STATE_RUN_MAPPING_F1)					RunFin01ke02();
+		if (gState == STATE_RUN_MAPPING_F2)					RunFin02ke03();
+		if (gState == STATE_RUN_MAPPING_F3)					RunFin03ke04();
+		if (gState == STATE_RUN_MAPPING_F4)					RunFin04ke05();
+		if (gState == STATE_RUN_MAPPING_F5)					RunFin05ke06();
+		
 		if (gState == STATE_RUN_MAPPING_EBOTEC)				RunMapping(4);
 		if (gState == STATE_RUN_LEARN)						RunLearn();
 		if (gState == STATE_RUN_TEST_COUNTER)				RunTestCounter();
@@ -314,6 +332,7 @@ int main(void)
 		if (gState == STATE_SETTING_DEBUG_MENU)				SettingDebugMenu();
 		if (gState == STATE_SETTING_DEBUG_SENSOR)			SettingDebugSensor();
 		if (gState == STATE_SETTING_ERROR)					SettingErrorMenu();
+		if (gState == STATE_SET_INVERSE)					SetInverse();
 	}
 }
 
@@ -1386,10 +1405,11 @@ void RunEb01ke02()
 	SetMinimInverse();
 	
 	RunWhileNormal(5);
-	
-	DriveTurn(120,40,DELAY_300_MS,gInverted);
-	
-	DriveTurn(50,50,DELAY_300_MS,gInverted);
+	if (gInverted==1)
+		DriveTurn(DIR_RIGHT,120,50,DELAY_300_MS,gInverted);
+	else
+		DriveTurn(DIR_RIGHT,120,40,DELAY_300_MS,gInverted);
+	DriveTurn(DIR_FORWARD,60,60,DELAY_300_MS,gInverted);
 	///DONE
 	SetMinim();
 	
@@ -1422,11 +1442,12 @@ void RunEb02ke03()
 	SetMinimInverse();
 	
 	RunWhileNormal(5);
-	
-	DriveTurn(DIR_RIGHT,120,40,DELAY_300_MS,gInverted);
-	DriveTurn(DIR_FORWARD,50,50,DELAY_300_MS,gInverted);
+	if (gInverted==1)
+		DriveTurn(DIR_RIGHT,120,50,DELAY_300_MS,gInverted);
+	else
+		DriveTurn(DIR_RIGHT,120,40,DELAY_300_MS,gInverted);
+	DriveTurn(DIR_FORWARD,60,60,DELAY_300_MS,gInverted);
 	///DONE
-	//~ RunWhileNormal(5);
 	SetMinim();
 	
 	RunEb03ke04();
@@ -1451,67 +1472,87 @@ void RunEb03ke04()
 
 
 
-void RunIv00ke01()
+void RunFin00ke01()
 {
-	gInverted = 1;
-	
-	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
-	
-	RunWhileNormal(5);
-	
-	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
-	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_50_MS,gInverted);
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
-	
 	RunWhileNormal(5);
 	
-	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	DriveTurn(DIR_RIGHT,40,40,DELAY_300_MS,gInverted);
+	RunWhileNormal(5);
 	
+	DriveTurn(DIR_RIGHT,40,40,DELAY_300_MS,gInverted);
+	RunWhileNormal(3);
+	
+	DriveTurn(DIR_LEFT,30,30,DELAY_200_MS,gInverted);
+	{
+		uint8_t sdef = gDriveSpeed;
+		gDriveSpeed = 70;
+		RunWhileNormal(3);
+		gDriveSpeed = sdef;
+	}
+	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
-	
-	RunWhileNormal(5);
-	
-	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
-	
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
-	
 	RunWhileNormal(5);
 	
-	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
+	RunWhileNormal(10);
 	
-	RunWhileNormal(5);
-	
-	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
-	
-	RunWhileNormal(5);
-	
-	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
-	
-	RunWhileNormal(5);
-	
-	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
-	
-	RunWhileNormal(5);
-	
-	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
-	
-	RunWhileNormal(5);
-	
-	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
-	
-	RunWhileNormal(5);
-	
-	//~ RunEb01ke02();
-	
+	RunFin01ke02();
 	while (ButtonIsNotPressed());
 	
 }
+void RunFin01ke02()
+{
+	RunWhileNormal(3);
+	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
+	RunWhileNormal(10);
+	
+	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
+	RunWhileNormal(3);
+	
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
+	RunWhileNormal(3);
+	
+	DriveTurn(DIR_LEFT,30,30,DELAY_200_MS,gInverted);
+	RunWhileNormal(3);
+	
+	DriveTurn(DIR_RIGHT,40,40,DELAY_300_MS,gInverted);
+	RunWhileNormal(3);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_200_MS,gInverted);
+	RunWhileNormal(3);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	RunWhileNormal(5);
+	
+	
+	while(ButtonIsNotPressed());
+}
+void RunFin02ke03()
+{
+}
+void RunFin03ke04()
+{
+}
+void RunFin04ke05()
+{
+	
+}
+void RunFin05ke06()
+{
+}
+
 
 void RunStart01(void)
 {
@@ -1648,7 +1689,7 @@ void RunTestCounter()
 }
 void RunInverse(void)
 {
-	RunIv00ke01();
+	RunFin00ke01();
 	gInverted = 1;
 	gState = STATE_RUN;
 	return;
@@ -2292,22 +2333,28 @@ void SetMinim()
 	gCaseH[11] = 0b00011100; gCaseL[11] = 0b00000000; gCaseV[11] = 8;
 	gCaseH[12] = 0b00001000; gCaseL[12] = 0b00000000; gCaseV[12] = 8;
 	gCaseH[13] = 0b00001100; gCaseL[13] = 0b00000000; gCaseV[13] = 6;
-	gCaseH[14] = 0b00001110; gCaseL[14] = 0b00000000; gCaseV[14] = 6;
+	gCaseH[14] = 0b00001110; gCaseL[14] = 0b00000000; gCaseV[14] = 0;
+	gCaseH[14] = 1; gCaseL[14] = 0; gCaseV[14] = 0;
 	gCaseH[15] = 0b00000100; gCaseL[15] = 0b00000000; gCaseV[15] = 6;
 	gCaseH[16] = 0b00000110; gCaseL[16] = 0b00000000; gCaseV[16] = 4;
-	gCaseH[17] = 0b00000111; gCaseL[17] = 0b00000000; gCaseV[17] = 4;
-	gCaseH[18] = 0b00000010; gCaseL[18] = 0b00000000; gCaseV[18] = 4;
-	gCaseH[19] = 0b00000011; gCaseL[19] = 0b00000000; gCaseV[19] = 2;
+	gCaseH[17] = 0b00000111; gCaseL[17] = 0b00000000; gCaseV[17] = 0;
+	gCaseH[17] = 1; gCaseL[17] = 0; gCaseV[17] = 0;
+	gCaseH[18] = 0b00000010; gCaseL[18] = 0b00000000; gCaseV[18] = 2;
+	gCaseH[19] = 0b00000011; gCaseL[19] = 0b00000000; gCaseV[19] = 0;
 	gCaseH[20] = 0b00000011; gCaseL[20] = 0b10000000; gCaseV[20] = 0;
+	gCaseH[20] = 1; gCaseL[20] = 0; gCaseV[20] = 0;
 	gCaseH[21] = 0b00000001; gCaseL[21] = 0b00000000; gCaseV[21] = 0;
 	gCaseH[22] = 0b00000001; gCaseL[22] = 0b10000000; gCaseV[22] = 0;
 	gCaseH[23] = 0b00000001; gCaseL[23] = 0b11000000; gCaseV[23] = 0;
+	gCaseH[23] = 1; gCaseL[23] = 0; gCaseV[23] = 0;
 	gCaseH[24] = 0b00000000; gCaseL[24] = 0b10000000; gCaseV[24] = 0;
-	gCaseH[25] = 0b00000000; gCaseL[25] = 0b11000000; gCaseV[25] = -2;
-	gCaseH[26] = 0b00000000; gCaseL[26] = 0b11100000; gCaseV[26] = -4;
-	gCaseH[27] = 0b00000000; gCaseL[27] = 0b01000000; gCaseV[27] = -4;
+	gCaseH[25] = 0b00000000; gCaseL[25] = 0b11000000; gCaseV[25] = 0;
+	gCaseH[26] = 0b00000000; gCaseL[26] = 0b11100000; gCaseV[26] = 0;
+	gCaseH[26] = 1; gCaseL[26] = 0; gCaseV[26] = 0;
+	gCaseH[27] = 0b00000000; gCaseL[27] = 0b01000000; gCaseV[27] = -2;
 	gCaseH[28] = 0b00000000; gCaseL[28] = 0b01100000; gCaseV[28] = -4;
-	gCaseH[29] = 0b00000000; gCaseL[29] = 0b01110000; gCaseV[29] = -6;
+	gCaseH[29] = 0b00000000; gCaseL[29] = 0b01110000; gCaseV[29] = 0;
+	gCaseH[29] = 1; gCaseL[29] = 0; gCaseV[29] = 0;
 	gCaseH[30] = 0b00000000; gCaseL[30] = 0b00100000; gCaseV[30] = -6;
 	gCaseH[31] = 0b00000000; gCaseL[31] = 0b00110000; gCaseV[31] = -6;
 	gCaseH[32] = 0b00000000; gCaseL[32] = 0b00111000; gCaseV[32] = -8;
@@ -2826,7 +2873,9 @@ uint8_t MapReadTCAUA(uint8_t queue_num)
 **/
 uint8_t GetCursor(uint16_t numstate)
 {
-	return (numstate%10);
+	if (numstate>=20)
+		return (numstate%10);
+	return numstate;
 }
 uint8_t GetParent(uint16_t numstate)
 {
@@ -3019,6 +3068,126 @@ void Menu()
 				gScrollNum--;
 			}
 		}
+		else if (gScrollNum == GetCursor(STATE_RUN_MAPPING_F0))
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("MAPPING F0    B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gState = STATE_RUN_MAPPING_F0;
+				gScrollNum = 1;
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+		}
+		else if (gScrollNum == GetCursor(STATE_RUN_MAPPING_F1))
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("MAPPING F1    B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gState = STATE_RUN_MAPPING_F1;
+				gScrollNum = 1;
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+		}
+		else if (gScrollNum == GetCursor(STATE_RUN_MAPPING_F2))
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("MAPPING F2    B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gState = STATE_RUN_MAPPING_F2;
+				gScrollNum = 1;
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+		}
+		else if (gScrollNum == GetCursor(STATE_RUN_MAPPING_F3))
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("MAPPING F3    B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gState = STATE_RUN_MAPPING_F3;
+				gScrollNum = 1;
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+		}
+		else if (gScrollNum == GetCursor(STATE_RUN_MAPPING_F4))
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("MAPPING F4    B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gState = STATE_RUN_MAPPING_F4;
+				gScrollNum = 1;
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+		}
+		else if (gScrollNum == GetCursor(STATE_RUN_MAPPING_F5))
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("MAPPING F5    B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gState = STATE_RUN_MAPPING_F5;
+				gScrollNum = 1;
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+		}
 		
 		else if (gScrollNum == GetCursor(STATE_RUN_TEST_COUNTER))
 		{
@@ -3122,7 +3291,88 @@ void Menu()
 				gScrollNum--;
 			}
 		}
+		else if (gScrollNum == GetCursor(STATE_SET_INVERSE))
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("INVERSE TOGGLE B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gState = STATE_SET_INVERSE;
+				gScrollNum = 1;
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+		}
 		
+	}
+}
+void SetInverse()
+{
+	gScrollMax = 2;
+	gScrollNum = 1;
+	while (gState==STATE_SET_INVERSE)
+	{
+		ReStrainScroll();
+		if (gScrollNum == 1)
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("Inverse ON    1B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gInverted = 1;
+				gState = GetParent(gState);
+				gScrollNum = GetCursor(STATE_SET_INVERSE);
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+			else if (act == BUTTON_BACK_DOWN)
+			{
+				gState = GetParent(gState);
+				gScrollNum = GetCursor(STATE_SET_INVERSE);
+			}
+		}
+		else if (gScrollNum == 2)
+		{
+			LCDGotoXY(0,0);
+			LCDstring((uint8_t*)("Inverse OFF   1B"),16);
+			uint8_t act;
+			act = ButtonRead();
+			if (act == BUTTON_ENTER_DOWN)
+			{
+				gInverted = 0;
+				gState = GetParent(gState);
+				gScrollNum = GetCursor(STATE_SET_INVERSE);
+			}
+			else if (act == BUTTON_NEXT_DOWN)
+			{
+				gScrollNum++;
+			}
+			else if (act == BUTTON_PREV_DOWN)
+			{
+				gScrollNum--;
+			}
+			else if (act == BUTTON_BACK_DOWN)
+			{
+				gState = GetParent(gState);
+				gScrollNum = GetCursor(STATE_SET_INVERSE);
+			}
+		}
 	}
 }
 
