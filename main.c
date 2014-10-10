@@ -94,6 +94,8 @@
 #define DELAY_50_MS					0
 #define DELAY_100_MS				1
 #define DELAY_200_MS				2
+#define DELAY_220_MS				22
+#define DELAY_250_MS				25
 #define DELAY_300_MS				3
 #define DELAY_310_MS				31
 #define DELAY_350_MS				35
@@ -1290,34 +1292,82 @@ void RunEb00ke01()
 {
 	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
 	
-	RunWhileNormal(5);
-	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	RunWhileNormal(3);
 	
-	RunWhileNormal(5);
-	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
+	DriveMove(0,0);
+	_delay_ms(5);
 	
-	RunWhileNormal(5);
-	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	DriveTurn(DIR_RIGHT,30,30,DELAY_250_MS,gInverted);
 	
-	RunWhileNormal(5);
-	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
+	DriveMove(0,0);
+	_delay_ms(5);
 	
-	RunWhileNormal(5);
-	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
+	RunWhileNormal(3);
 	
-	RunWhileNormal(5);
-	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	DriveMove(0,0);
+	_delay_ms(5);
 	
-	RunWhileNormal(5);
+	DriveTurn(DIR_LEFT,30,30,DELAY_250_MS,gInverted);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	RunWhileNormal(3);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_250_MS,gInverted);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	RunWhileNormal(3);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	DriveTurn(DIR_LEFT,30,30,DELAY_250_MS,gInverted);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	RunWhileNormal(3);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	DriveTurn(DIR_LEFT,30,30,DELAY_250_MS,gInverted);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	RunWhileNormal(3);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_250_MS,gInverted);
+	
+	DriveMove(0,0);
+	_delay_ms(5);
+	
+	RunWhileNormal(3);
 	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
 	
-	RunWhileNormal(5);
+	RunWhileNormal(3);
 	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
-	RunWhileNormal(5);
+	DriveMove(0,0);
+	_delay_ms(10);
+	
+	RunWhileNormal(3);
 	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
 	
-	RunWhileNormal(5);
+	DriveMove(0,0);
+	_delay_ms(50);
+	
+	RunWhileNormal(3);
 	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
@@ -1383,7 +1433,7 @@ void RunEb01ke02()
 	//~ DirTurnLeft();
 	//~ DriveMove(30,30);
 	//~ _delay_ms(350);
-	DriveTurn(DIR_LEFT,30,30,DELAY_350_MS,gInverted);
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
@@ -1423,7 +1473,7 @@ void RunEb02ke03()
 	DriveTurn(DIR_LEFT,30,30,DELAY_200_MS,gInverted);
 	RunWhileNormal(5);
 	
-	DriveTurn(DIR_LEFT,30,30,DELAY_350_MS,gInverted);
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
@@ -1443,7 +1493,7 @@ void RunEb02ke03()
 	
 	RunWhileNormal(5);
 	if (gInverted==1)
-		DriveTurn(DIR_RIGHT,120,50,DELAY_300_MS,gInverted);
+		DriveTurn(DIR_RIGHT,110,50,DELAY_300_MS,gInverted);
 	else
 		DriveTurn(DIR_RIGHT,120,40,DELAY_300_MS,gInverted);
 	DriveTurn(DIR_FORWARD,60,60,DELAY_300_MS,gInverted);
@@ -1459,14 +1509,14 @@ void RunEb03ke04()
 	RunWhileNormal(5);
 	//~ RunWhileNormal(5);
 	
-	DriveTurn(DIR_LEFT,40,40,DELAY_310_MS,gInverted);
+	DriveTurn(DIR_LEFT,30,30,DELAY_310_MS,gInverted);
 	
 	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
 	
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_RIGHT,50,50,DELAY_300_MS,gInverted);
-	RunWhileNormal(10);
+	RunWhileNormal(30);
 	
 }
 
@@ -1481,6 +1531,8 @@ void RunFin00ke01()
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_RIGHT,40,40,DELAY_300_MS,gInverted);
+	DriveMove(0,0);
+	_delay_ms(100);
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_RIGHT,40,40,DELAY_300_MS,gInverted);
@@ -1506,7 +1558,7 @@ void RunFin00ke01()
 	RunWhileNormal(5);
 	
 	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
-	RunWhileNormal(10);
+	RunWhileNormal(5);
 	
 	RunFin01ke02();
 	while (ButtonIsNotPressed());
@@ -1514,43 +1566,155 @@ void RunFin00ke01()
 }
 void RunFin01ke02()
 {
-	RunWhileNormal(3);
-	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
+	RunWhileNormal(5);
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
 	RunWhileNormal(10);
 	
 	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
 	RunWhileNormal(3);
 	
 	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
-	RunWhileNormal(3);
+	RunWhileNormal(8);
 	
-	DriveTurn(DIR_LEFT,30,30,DELAY_200_MS,gInverted);
-	RunWhileNormal(3);
-	
-	DriveTurn(DIR_RIGHT,40,40,DELAY_300_MS,gInverted);
-	RunWhileNormal(3);
-	
-	DriveTurn(DIR_RIGHT,30,30,DELAY_200_MS,gInverted);
-	RunWhileNormal(3);
+	//~ DriveTurn(DIR_LEFT,30,30,DELAY_200_MS,gInverted);
+	//~ RunWhileNormal(3);
 	
 	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	//~ RunWhileNormal(5);
+	//~ 
+	//~ DriveTurn(DIR_RIGHT,30,30,DELAY_200_MS,gInverted);
+	DriveTurn(DIR_FORWARD,90,30,DELAY_200_MS,gInverted);
+	
 	RunWhileNormal(5);
 	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	DriveMove(0,0);
+	_delay_ms(50);
 	
+	RunWhileNormal(2);
+	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
+	RunWhileNormal(5);
+	
+	RunFin02ke03();
 	while(ButtonIsNotPressed());
 }
 void RunFin02ke03()
 {
+	DriveTurn(DIR_FORWARD,30,30,DELAY_200_MS,gInverted);
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	RunWhileNormal(7);
+	
+	DriveTurn(DIR_LEFT,30,30,DELAY_300_MS,gInverted);
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_FORWARD,60,40,DELAY_100_MS,gInverted);
+	RunWhileNormal(5);
+	
+	//~ DriveTurn(DIR_FORWARD,100,40,DELAY_200_MS,gInverted);
+	//~ DriveMove(0,0);
+	//~ _delay_ms(2000);
+	RunFin03ke04();
+	while(ButtonIsNotPressed());
 }
 void RunFin03ke04()
 {
+	RunWhileNormal(2);
+	DriveTurn(DIR_RIGHT,30,30,DELAY_200_MS,gInverted);
+	DriveTurn(DIR_FORWARD,30,30,DELAY_50_MS,gInverted);
+	{
+		uint8_t default_speed = gDriveSpeed;
+		gDriveSpeed = 45;
+		RunWhileNormal(10);
+		gDriveSpeed = default_speed;
+	}
+	
+	//~ DriveTurn(DIR_LEFT,60,60,DELAY_250_MS,gInverted);
+	DriveMove(0,0);
+	_delay_ms(50);
+	if (gInverted==0)
+		DriveTurn(DIR_LEFT,60,60,DELAY_100_MS,gInverted);
+	else
+		DriveTurn(DIR_LEFT,60,60,DELAY_200_MS,gInverted);
+	SensorReadDigital();
+	while (gSensH==0 && gSensL==0)
+	{
+		SensorReadDigital();
+		if (gInverted==0)
+			DirTurnLeft();
+		else
+			DirTurnRight();
+		DriveMove(50,50);
+	}
+	
+	RunWhileNormal(10);
+	if (gInverted==0)
+		DriveTurn(DIR_FORWARD,0,60,DELAY_100_MS,gInverted);
+	else
+		DriveTurn(DIR_FORWARD,0,60,DELAY_100_MS,gInverted);
+	RunWhileNormal(5);
+	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_100_MS,gInverted);
+	RunWhileNormal(5);
+	
+	if (gInverted==0)
+		DriveTurn(DIR_FORWARD,70,90,DELAY_300_MS,gInverted);
+	else
+		DriveTurn(DIR_FORWARD,90,70,DELAY_300_MS,gInverted);
+	RunFin04ke05();
+	while(ButtonIsNotPressed());
 }
 void RunFin04ke05()
 {
+	RunWhileNormal(10);
+	DriveTurn(DIR_LEFT	,30,90,DELAY_100_MS,gInverted);
+	DriveTurn(DIR_RIGHT	,90,30,DELAY_100_MS,gInverted);
+	RunWhileNormal(5);
 	
+	DriveTurn(DIR_FORWARD,30,40,DELAY_50_MS,gInverted);
+	RunWhileNormal(3);
+	DriveTurn(DIR_RIGHT,90,20,DELAY_200_MS,gInverted);
+	RunWhileNormal(5);
+	DriveTurn(DIR_FORWARD,90,90,DELAY_50_MS,gInverted);
+	RunWhileNormal(5);
+	
+	if (gInverted==0)
+		DriveTurn(DIR_LEFT,90,20,DELAY_200_MS,gInverted);
+	else
+		DriveTurn(DIR_LEFT,90,60,DELAY_200_MS,gInverted);
+	DriveMove(0,0);
+	_delay_ms(100);
+	RunFin05ke06();
+	while(ButtonIsNotPressed());
 }
 void RunFin05ke06()
 {
+	RunWhileNormal(10);
+	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(10);
+	DriveTurn(DIR_RIGHT,40,40,DELAY_300_MS,gInverted);
+	
+	RunWhileNormal(5);
+	DriveTurn(DIR_RIGHT,90,20,DELAY_200_MS,gInverted);
+	
+	RunWhileNormal(5);
+	//~ DriveTurn(DIR_RIGHT	,30,90,DELAY_100_MS,gInverted);
+	//~ DriveTurn(DIR_LEFT	,90,30,DELAY_100_MS,gInverted);
+	DriveTurn(DIR_FORWARD, 90,90,DELAY_50_MS,gInverted);
+	RunWhileNormal(5);
+	DriveTurn(DIR_RIGHT,70,30,DELAY_200_MS,gInverted);
+	DriveTurn(DIR_FORWARD,50,150,DELAY_100_MS,gInverted);
+	
+	DriveTurn(DIR_FORWARD,30,30,DELAY_100_MS,gInverted);
+	
+	DriveMove(0,0);
+	while(ButtonIsNotPressed());
 }
 
 
@@ -2652,6 +2816,10 @@ void DriveTurn(uint8_t dir, uint8_t pwm_left, uint8_t pwm_right, uint8_t time_ms
 		_delay_ms(100);
 	else if (time_ms == DELAY_200_MS)
 		_delay_ms(200);
+	else if (time_ms == DELAY_220_MS)
+		_delay_ms(220);
+	else if (time_ms == DELAY_250_MS)
+		_delay_ms(250);
 	else if (time_ms == DELAY_300_MS)
 		_delay_ms(300);
 	else if (time_ms == DELAY_400_MS)
