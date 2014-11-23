@@ -11,6 +11,11 @@
  * 	SRAM	  2048 Bytes
  * 
  * ADC sensor dpn 34567 ~67 adc, 345 sel
+ ...............................
+ * Todo:
+ * 	(17 Oktober 2014)
+ * 	>COunter to mantain action;s time
+ * 	>recording Direction, as turn left, turn right in RunWhileNormal isn't expected
  */
 
 //~ #define F_CPU 12000000
@@ -48,7 +53,7 @@
 #define ADDRESS_BLOCK_MAP_UNTIL_CASE_L		ADDRESS_BLOCK_MAP_ACT_HIGH+MAP_MAXIMUM_WAYPOINT+1
 #define ADDRESS_BLOCK_MAP_UNTIL_CASE_H		ADDRESS_BLOCK_MAP_UNTIL_CASE_L+MAP_MAXIMUM_WAYPOINT+1
 
-///Deprecated
+///Deprecated, reference only
 //~ 
 //~ #define WAYPOINTS					50
 //~ #define MAP_SIZE					WAYPOINTS
@@ -117,7 +122,7 @@
 
 uint8_t MapGetAct(uint8_t act, uint8_t act_low, uint8_t act_high);
 uint8_t MapGetActTranslate(uint8_t act, uint8_t act_low, uint8_t act_high);
-/** //deprecated, while the idea kept for a while
+/** //deprecated, while the idea kept for a while as reference
 void MapWriteTurn(uint8_t queue_num, uint8_t turn);
 void MapWriteCaseA(uint8_t queue_num, uint8_t casea);
 void MapWriteUntilA(uint8_t queue_num, uint8_t untila);
@@ -290,6 +295,25 @@ uint8_t GetChild(uint8_t parent, uint8_t childid);
 #define STATE_SETTING_ERROR						66 //BOBOT
 
 
+#define DraftMenu(NUMBER,TEXT,ENTER_ACTION,BACK_STATE)			\
+		if (gScrollNum == NUMBER)								\
+		{														\
+			LCDGotoXY(0,0);										\
+			LCDstring((uint8_t*)(TEXT),16);						\
+			uint8_t action = ButtonRead();									\
+			if (action == BUTTON_ENTER_DOWN)						\
+				ENTER_ACTION;									\
+			else if (action == BUTTON_NEXT_DOWN)					\
+				gScrollNum++;									\
+			else if (action == BUTTON_PREV_DOWN)					\
+				gScrollNum--;									\
+			else if (action == BUTTON_BACK_DOWN)					\
+			{													\
+				gState = BACK_STATE;							\
+				return;											\
+			}													\
+		}
+
 
 #define BUTTON_0_DOWN	0
 #define BUTTON_1_DOWN	1
@@ -356,6 +380,7 @@ void Init()
 	gScrollNum = 1;
 	gDriveLastError=0;
 	
+	//Reference default good PID
 	//~ gDriveLimit = 120;
 	//~ gDriveSpeed = 60;
 	//~ gDriveKP = 6;
@@ -1292,7 +1317,7 @@ void RunEb00ke01()
 {
 	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
 	
-	RunWhileNormal(3);
+	RunWhileNormal(5);
 	
 	DriveMove(0,0);
 	_delay_ms(5);
@@ -1302,7 +1327,8 @@ void RunEb00ke01()
 	DriveMove(0,0);
 	_delay_ms(5);
 	
-	RunWhileNormal(3);
+	
+	RunWhileNormal(5);
 	
 	DriveMove(0,0);
 	_delay_ms(5);
@@ -1312,7 +1338,8 @@ void RunEb00ke01()
 	DriveMove(0,0);
 	_delay_ms(5);
 	
-	RunWhileNormal(3);
+	
+	RunWhileNormal(5);
 	
 	DriveMove(0,0);
 	_delay_ms(5);
@@ -1322,7 +1349,8 @@ void RunEb00ke01()
 	DriveMove(0,0);
 	_delay_ms(5);
 	
-	RunWhileNormal(3);
+	
+	RunWhileNormal(5);
 	
 	DriveMove(0,0);
 	_delay_ms(5);
@@ -1332,7 +1360,8 @@ void RunEb00ke01()
 	DriveMove(0,0);
 	_delay_ms(5);
 	
-	RunWhileNormal(3);
+	
+	RunWhileNormal(5);
 	
 	DriveMove(0,0);
 	_delay_ms(5);
@@ -1342,7 +1371,8 @@ void RunEb00ke01()
 	DriveMove(0,0);
 	_delay_ms(5);
 	
-	RunWhileNormal(3);
+	
+	RunWhileNormal(5);
 	
 	DriveMove(0,0);
 	_delay_ms(5);
@@ -1352,25 +1382,28 @@ void RunEb00ke01()
 	DriveMove(0,0);
 	_delay_ms(5);
 	
-	RunWhileNormal(3);
+	
+	RunWhileNormal(5);
+	
 	DriveTurn(DIR_FORWARD,30,30,DELAY_300_MS,gInverted);
 	
-	RunWhileNormal(3);
+	RunWhileNormal(4);
+	
 	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
 	DriveMove(0,0);
 	_delay_ms(10);
 	
-	RunWhileNormal(3);
+	RunWhileNormal(5);
 	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
 	
 	DriveMove(0,0);
 	_delay_ms(50);
 	
-	RunWhileNormal(3);
+	RunWhileNormal(5);
 	DriveTurn(DIR_LEFT,40,40,DELAY_300_MS,gInverted);
 	
-	RunWhileNormal(5);
+	RunWhileNormal(3);
 	DriveTurn(DIR_RIGHT,30,30,DELAY_300_MS,gInverted);
 	
 	RunWhileNormal(5);
@@ -1426,6 +1459,16 @@ void RunEb01ke02()
 	//~ RunEb02ke03()
 	///special case that this checkpoint start different from RunEb03ke03 function
 	SetMinim();
+	
+	if (gInverted==0)
+	{		
+		DriveTurn(DIR_RIGHT,30,30,DELAY_200_MS,gInverted);
+		RunWhileNormal(5);
+		
+		DriveTurn(DIR_FORWARD,30,30,DELAY_100_MS,gInverted);
+		RunWhileNormal(5);
+	
+	}
 	
 	DriveTurn(DIR_LEFT,30,30,DELAY_200_MS,gInverted);
 	RunWhileNormal(5);
@@ -2172,19 +2215,19 @@ void SensorCalibrate()
 		{
 			if (gSensAnalog[num]<refbellow[num])		refbellow[num]	= gSensAnalog[num];
 			if (gSensAnalog[num]>refupper[num])		refupper[num]	= gSensAnalog[num];
-			gSensRef[num] = (refbellow[num]+refupper[num])/2;
+			gSensRef[num] = ((refbellow[num]+refupper[num])*1)/2;
 		}
 		if (gSensAnalog[16+SENS_A_LEFT_BIT]<refbellow[16+SENS_A_LEFT_BIT])		refbellow[16+SENS_A_LEFT_BIT]=gSensAnalog[16+SENS_A_LEFT_BIT];
 		if (gSensAnalog[16+SENS_A_LEFT_BIT]>refupper[16+SENS_A_LEFT_BIT])		refupper[16+SENS_A_LEFT_BIT]=gSensAnalog[16+SENS_A_LEFT_BIT];
-		gSensRef[16+SENS_A_LEFT_BIT] = (refbellow[16+SENS_A_LEFT_BIT]+refupper[16+SENS_A_LEFT_BIT])/2;
+		gSensRef[16+SENS_A_LEFT_BIT] = ((refbellow[16+SENS_A_LEFT_BIT]+refupper[16+SENS_A_LEFT_BIT])*3)/4;
 		
 		if (gSensAnalog[16+SENS_A_RIGHT_BIT]<refbellow[16+SENS_A_RIGHT_BIT])	refbellow[16+SENS_A_RIGHT_BIT]=gSensAnalog[16+SENS_A_RIGHT_BIT];
 		if (gSensAnalog[16+SENS_A_RIGHT_BIT]>refupper[16+SENS_A_RIGHT_BIT])		refupper[16+SENS_A_RIGHT_BIT]=gSensAnalog[16+SENS_A_RIGHT_BIT];
-		gSensRef[16+SENS_A_RIGHT_BIT] = (refbellow[16+SENS_A_RIGHT_BIT]+refupper[16+SENS_A_RIGHT_BIT])/2;
+		gSensRef[16+SENS_A_RIGHT_BIT] = ((refbellow[16+SENS_A_RIGHT_BIT]+refupper[16+SENS_A_RIGHT_BIT])*3)/4;
 		
 		if (gSensAnalog[16+SENS_A_MID_BIT]<refbellow[16+SENS_A_MID_BIT])		refbellow[16+SENS_A_MID_BIT]=gSensAnalog[16+SENS_A_MID_BIT];
 		if (gSensAnalog[16+SENS_A_MID_BIT]>refupper[16+SENS_A_MID_BIT])			refupper[16+SENS_A_MID_BIT]=gSensAnalog[16+SENS_A_MID_BIT];
-		gSensRef[16+SENS_A_MID_BIT] = (refbellow[16+SENS_A_MID_BIT]+refupper[16+SENS_A_MID_BIT])/2;
+		gSensRef[16+SENS_A_MID_BIT] = ((refbellow[16+SENS_A_MID_BIT]+refupper[16+SENS_A_MID_BIT])*3)/4;
 		
 		SensorReadDigital();
 		for (num=0;num<=7;num++)
@@ -3116,6 +3159,8 @@ void Menu()
 				gScrollNum--;
 			}
 		}
+		///TEST 24 oktober 2014
+		//~ DraftMenu(GetCursor(STATE_RUN_INVERSE),"RUN INVERSE   0B",gState = STATE_RUN_INVERSE,STATE_MENU);
 		else if (gScrollNum == GetCursor(STATE_RUN_INVERSE))
 		{
 			LCDGotoXY(0,0);
@@ -3975,32 +4020,33 @@ void SettingDebugMenu()
 			}
 		}
 		
-		else if (gScrollNum == GetCursor(STATE_SETTING_DEBUG_DRIVER))
-		{
-			LCDGotoXY(0,0);
-			LCDstring((uint8_t*)("DEBUG-DRIVER  2B"),16);
-			uint8_t act;
-			act = ButtonRead();
-			
-			if (act == BUTTON_ENTER_DOWN)
-			{
-				gState = STATE_SETTING_DEBUG_DRIVER;
-				gScrollNum = 1;
-			}
-			else if (act == BUTTON_NEXT_DOWN)
-			{
-				gScrollNum++;
-			}
-			else if (act == BUTTON_PREV_DOWN)
-			{
-				gScrollNum--;
-			}
-			else if (act == BUTTON_BACK_DOWN)
-			{
-				gState = STATE_SETTING_MENU;
-				gScrollNum = GetCursor(STATE_SETTING_DEBUG_MENU);
-			}
-		}
+		//~ else if (gScrollNum == GetCursor(STATE_SETTING_DEBUG_DRIVER))
+		//~ {
+			//~ LCDGotoXY(0,0);
+			//~ LCDstring((uint8_t*)("DEBUG-DRIVER  2B"),16);
+			//~ uint8_t act;
+			//~ act = ButtonRead();
+			//~ 
+			//~ if (act == BUTTON_ENTER_DOWN)
+			//~ {
+				//~ gState = STATE_SETTING_DEBUG_DRIVER;
+				//~ gScrollNum = 1;
+			//~ }
+			//~ else if (act == BUTTON_NEXT_DOWN)
+			//~ {
+				//~ gScrollNum++;
+			//~ }
+			//~ else if (act == BUTTON_PREV_DOWN)
+			//~ {
+				//~ gScrollNum--;
+			//~ }
+			//~ else if (act == BUTTON_BACK_DOWN)
+			//~ {
+				//~ gState = STATE_SETTING_MENU;
+				//~ gScrollNum = GetCursor(STATE_SETTING_DEBUG_MENU);
+			//~ }
+		//~ }
+		DraftMenu(GetCursor(STATE_SETTING_DEBUG_DRIVER),(uint8_t*)("DEBUG-DRIVER  2B"),gState = STATE_SETTING_DEBUG_DRIVER,GetParent(STATE_SETTING_DEBUG_DRIVER));
 	}
 }
 

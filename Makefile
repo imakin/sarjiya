@@ -621,13 +621,19 @@ clean clean_list program debug gdb-config
 
 
 
-flash :
-	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude.conf" -U flash:w:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a -U flash:v:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a
-fuse :
-	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude.conf" -U lfuse:w:0xFF:m -U hfuse:w:0xC1:m 
+MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+CURRENT_DIR := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
+
+
+#~ flash :
+	#~ sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude.conf" -U flash:w:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a -U flash:v:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a
+#~ fuse :
+	#~ sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/media/kentir1/Development/Elect/usbasp/avrdude.conf" -U lfuse:w:0xFF:m -U hfuse:w:0xC1:m 
 
 #di ubuntu 14.04 format configurasi beda dikit
-fuselatest :
+fuse :
 	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/etc/avrdude.conf" -U lfuse:w:0xFF:m -U hfuse:w:0xC1:m 
-flashlatest :
-	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/etc/avrdude.conf" -U flash:w:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a -U flash:v:"/media/kentir1/Development/Elect/LF_sariya/code/main.hex":a
+flash :
+	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/etc/avrdude.conf" -U flash:w:"$(shell pwd)/main.hex":a -U flash:v:"$(shell pwd)/main.hex":a
+flashnov :
+	sudo avrdude -p m32 -c usbasp -P usb -b 9600 -C "/etc/avrdude.conf" -U flash:w:"$(shell pwd)/main.hex":a
